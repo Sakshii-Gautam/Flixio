@@ -5,7 +5,7 @@ import {
   CircularProgress,
   DialogContent,
   Grid,
-  Modal,
+  IconButton,
   Rating,
   Typography,
 } from '@mui/material';
@@ -16,18 +16,13 @@ import {
   Remove,
   ArrowBack,
   Language,
-  Movie as MovieIcon,
   PlusOne,
   Theaters,
 } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {
-  getFavoritesList,
-  getRecommendations,
-  getWatchlist,
-} from '../../services/tmdb';
+
 import {
   genresContainer,
   StyledLinks,
@@ -38,6 +33,8 @@ import {
   StyledButtonsContainer,
   StyledModal,
   StyledIframe,
+  closeModalIcon,
+  modalDialogContent,
 } from '../MovieInformation/styles.js';
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
@@ -49,6 +46,9 @@ import {
   getTvShowsRecommendations,
   getTvShowWatchlist,
 } from '../../services/tv';
+import CloseIcon from '@mui/icons-material/Close';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
 const sessionId = localStorage.getItem('session_id');
@@ -59,13 +59,12 @@ const TvInformation = () => {
     isLoading: isTvShowLoading,
     isError: isTvShowError,
   } = useSelector((state) => state.tvshow);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { favorites } = useSelector((state) => state.favorites);
   const { watchlist } = useSelector((state) => state.watchlist);
-
-  const {
-    recommendations: { recommendations },
-  } = useSelector((state) => state.tvshows);
+  const { recommendations } = useSelector(
+    (state) => state.tvshows.recommendations
+  );
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -82,9 +81,11 @@ const TvInformation = () => {
       sessionId: localStorage.getItem('session_id'),
       page: 1,
     };
-    dispatch(getTvShowFavoritesList(data));
-    dispatch(getTvShowWatchlist(data));
-  }, [id]);
+    if (isAuthenticated) {
+      dispatch(getTvShowFavoritesList(data));
+      dispatch(getTvShowWatchlist(data));
+    }
+  }, [id, isAuthenticated]);
 
   useEffect(() => {
     //Check if the movie has been already favorited
@@ -101,27 +102,35 @@ const TvInformation = () => {
   }, [watchlist, tvshow]);
 
   const addToFavorites = async () => {
-    await axios.post(
-      `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${tmdbApiKey}&session_id=${sessionId}`,
-      {
-        media_type: 'tv',
-        media_id: id,
-        favorite: !isTvShowFavorited,
-      }
-    );
-    setIsTvShowFavorited((prev) => !prev);
+    if (isAuthenticated) {
+      await axios.post(
+        `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${tmdbApiKey}&session_id=${sessionId}`,
+        {
+          media_type: 'tv',
+          media_id: id,
+          favorite: !isTvShowFavorited,
+        }
+      );
+      setIsTvShowFavorited((prev) => !prev);
+    } else {
+      toast('Please Login!');
+    }
   };
 
   const addToWatchlist = async () => {
-    await axios.post(
-      `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${tmdbApiKey}&session_id=${sessionId}`,
-      {
-        media_type: 'tv',
-        media_id: id,
-        watchlist: !isTvShowWatchlisted,
-      }
-    );
-    setIsTvShowWatchlisted((prev) => !prev);
+    if (isAuthenticated) {
+      await axios.post(
+        `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${tmdbApiKey}&session_id=${sessionId}`,
+        {
+          media_type: 'tv',
+          media_id: id,
+          watchlist: !isTvShowWatchlisted,
+        }
+      );
+      setIsTvShowWatchlisted((prev) => !prev);
+    } else {
+      toast('Please Login!');
+    }
   };
 
   if (isTvShowLoading) {
@@ -142,6 +151,7 @@ const TvInformation = () => {
 
   return (
     <StyledGrid container>
+      <ToastContainer />
       {/* Movie Poster */}
       <Grid
         item
@@ -150,7 +160,11 @@ const TvInformation = () => {
         sx={{ textAlign: { xs: 'center', md: 'center', lg: 'none' } }}
       >
         <StyledPosterImage
-          src={`https://image.tmdb.org/t/p/w500${tvshow?.poster_path}`}
+          src={
+            tvshow?.poster_path
+              ? `https://image.tmdb.org/t/p/w500${tvshow?.poster_path}`
+              : 'https:/shrtco.de/YWpmUW'
+          }
           alt={tvshow?.name}
         />
       </Grid>
@@ -241,7 +255,11 @@ const TvInformation = () => {
                       sx={{ textDecoration: 'none' }}
                     >
                       <StyledCastImage
-                        src={`https://image.tmdb.org/t/p/w500${character?.profile_path}`}
+                        src={
+                          character?.profile_path
+                            ? `https://image.tmdb.org/t/p/w500${character?.profile_path}`
+                            : 'https:/shrtco.de/YWpmUW'
+                        }
                         alt={character.name}
                       />
                       <Typography color='textPrimary'>
@@ -348,11 +366,7 @@ const TvInformation = () => {
         </Typography>
 
         {recommendations ? (
-          <MovieList
-            className='movielist'
-            movies={recommendations}
-            numberOfMovies={12}
-          />
+          <MovieList movies={recommendations} numberOfMovies={12} />
         ) : (
           <Box>Sorry, No Similar Movies Found!</Box>
         )}
@@ -364,15 +378,24 @@ const TvInformation = () => {
         open={showTrailerModal}
         onClose={() => setShowTrailerModal(!showTrailerModal)}
       >
-        <DialogContent>
-          {tvshow.videos?.results?.length > 0 && (
-            <StyledIframe
-              className='videos'
-              autoPlay
-              title='Trailer'
-              src={`https://www.youtube.com/embed/${tvshow.videos.results[0].key}`}
-              allow='autoplay'
-            />
+        <DialogContent sx={modalDialogContent}>
+          {tvshow?.videos?.results?.length > 0 && (
+            <>
+              <StyledIframe
+                className='videos'
+                autoPlay
+                title='Trailer'
+                src={`https://www.youtube.com/embed/${tvshow?.videos?.results[0]?.key}`}
+                allow='autoplay'
+              />
+
+              <IconButton
+                sx={closeModalIcon}
+                onClick={() => setShowTrailerModal(false)}
+              >
+                <CloseIcon fontSize='large' />
+              </IconButton>
+            </>
           )}
         </DialogContent>
       </StyledModal>

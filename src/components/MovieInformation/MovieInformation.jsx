@@ -5,6 +5,7 @@ import {
   CircularProgress,
   DialogContent,
   Grid,
+  IconButton,
   Rating,
   Typography,
 } from '@mui/material';
@@ -38,11 +39,16 @@ import {
   StyledButtonsContainer,
   StyledModal,
   StyledIframe,
+  closeModalIcon,
+  modalDialogContent,
 } from './styles';
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
 import { MovieList } from '..';
 import { LoaderContainer } from '../../styles';
+import CloseIcon from '@mui/icons-material/Close';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
 const sessionId = localStorage.getItem('session_id');
@@ -53,7 +59,7 @@ const MovieInformation = () => {
     isLoading: isMovieLoading,
     isError: isMovieError,
   } = useSelector((state) => state.movie);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { favorites } = useSelector((state) => state.favorites);
   const { watchlist } = useSelector((state) => state.watchlist);
   const { recommendations } = useSelector((state) => state.recommendations);
@@ -73,9 +79,11 @@ const MovieInformation = () => {
       sessionId: localStorage.getItem('session_id'),
       page: 1,
     };
-    dispatch(getFavoritesList(data));
-    dispatch(getWatchlist(data));
-  }, [id]);
+    if (isAuthenticated) {
+      dispatch(getFavoritesList(data));
+      dispatch(getWatchlist(data));
+    }
+  }, [id, isAuthenticated]);
 
   useEffect(() => {
     //Check if the movie has been already favorited
@@ -92,27 +100,35 @@ const MovieInformation = () => {
   }, [watchlist, movie]);
 
   const addToFavorites = async () => {
-    await axios.post(
-      `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${tmdbApiKey}&session_id=${sessionId}`,
-      {
-        media_type: 'movie',
-        media_id: id,
-        favorite: !isMovieFavorited,
-      }
-    );
-    setIsMovieFavorited((prev) => !prev);
+    if (isAuthenticated) {
+      await axios.post(
+        `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${tmdbApiKey}&session_id=${sessionId}`,
+        {
+          media_type: 'movie',
+          media_id: id,
+          favorite: !isMovieFavorited,
+        }
+      );
+      setIsMovieFavorited((prev) => !prev);
+    } else {
+      toast('Please Login!');
+    }
   };
 
   const addToWatchlist = async () => {
-    await axios.post(
-      `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${tmdbApiKey}&session_id=${sessionId}`,
-      {
-        media_type: 'movie',
-        media_id: id,
-        watchlist: !isMovieWatchlisted,
-      }
-    );
-    setIsMovieWatchlisted((prev) => !prev);
+    if (isAuthenticated) {
+      await axios.post(
+        `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${tmdbApiKey}&session_id=${sessionId}`,
+        {
+          media_type: 'movie',
+          media_id: id,
+          watchlist: !isMovieWatchlisted,
+        }
+      );
+      setIsMovieWatchlisted((prev) => !prev);
+    } else {
+      toast('Please Login!');
+    }
   };
 
   if (isMovieLoading) {
@@ -133,6 +149,7 @@ const MovieInformation = () => {
 
   return (
     <StyledGrid container>
+      <ToastContainer />
       {/* Movie Poster */}
       <Grid
         item
@@ -141,7 +158,11 @@ const MovieInformation = () => {
         sx={{ textAlign: { xs: 'center', md: 'center', lg: 'none' } }}
       >
         <StyledPosterImage
-          src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
+          src={
+            movie?.poster_path
+              ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
+              : 'https:/shrtco.de/YWpmUW'
+          }
           alt={movie?.title}
         />
       </Grid>
@@ -229,7 +250,11 @@ const MovieInformation = () => {
                       sx={{ textDecoration: 'none' }}
                     >
                       <StyledCastImage
-                        src={`https://image.tmdb.org/t/p/w500${character?.profile_path}`}
+                        src={
+                          character?.profile_path
+                            ? `https://image.tmdb.org/t/p/w500${character?.profile_path}`
+                            : 'https:/shrtco.de/YWpmUW'
+                        }
                         alt={character.name}
                       />
                       <Typography color='textPrimary'>
@@ -332,11 +357,7 @@ const MovieInformation = () => {
         </Typography>
 
         {recommendations ? (
-          <MovieList
-            className='movielist'
-            movies={recommendations}
-            numberOfMovies={12}
-          />
+          <MovieList movies={recommendations} numberOfMovies={12} />
         ) : (
           <Box>Sorry, No Similar Movies Found!</Box>
         )}
@@ -348,15 +369,24 @@ const MovieInformation = () => {
         open={showTrailerModal}
         onClose={() => setShowTrailerModal(!showTrailerModal)}
       >
-        <DialogContent>
-          {movie.videos?.results?.length > 0 && (
-            <StyledIframe
-              className='videos'
-              autoPlay
-              title='Trailer'
-              src={`https://www.youtube.com/embed/${movie.videos.results[0].key}`}
-              allow='autoplay'
-            />
+        <DialogContent sx={modalDialogContent}>
+          {movie?.videos?.results?.length > 0 && (
+            <>
+              <StyledIframe
+                className='videos'
+                autoPlay
+                title='Trailer'
+                src={`https://www.youtube.com/embed/${movie?.videos?.results[0]?.key}`}
+                allow='autoplay'
+              />
+
+              <IconButton
+                sx={closeModalIcon}
+                onClick={() => setShowTrailerModal(false)}
+              >
+                <CloseIcon fontSize='large' />
+              </IconButton>
+            </>
           )}
         </DialogContent>
       </StyledModal>

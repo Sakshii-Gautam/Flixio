@@ -12,7 +12,13 @@ const RatedCards = ({ title, data }) => {
       >
         {title}
       </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: { xs: 'center', sm: 'start' },
+        }}
+      >
         {data?.map((movie, i) => (
           <Movie key={movie.id} movie={movie} i={i} />
         ))}

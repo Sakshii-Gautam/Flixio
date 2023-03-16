@@ -2,12 +2,12 @@ import {
   Divider,
   List,
   ListItemText,
-  ListSubheader,
   ListItemIcon,
   Box,
   useTheme,
   ListItemButton,
   CircularProgress,
+  useMediaQuery,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import {
@@ -16,6 +16,7 @@ import {
   imageLink,
   SidebarLoaderContainer,
   StyledLinks,
+  StyledListSubheader,
 } from './styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { getMoviesGenres } from '../../services/tmdb';
@@ -30,10 +31,8 @@ const Sidebar = ({ setMobileOpen }) => {
     (state) => state.tvshows.genres
   );
   const { genres, isLoading } = useSelector((state) => state.genres);
-
   const { media } = useSelector((state) => state.optionPreferences);
   const isMovies = media === 'movie';
-
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [selectedGenreIndex, setSelectedGenreIndex] = useState(null);
   const [selectedCategoriesIndex, setSelectedCategoriesIndex] = useState(null);
@@ -72,6 +71,7 @@ const Sidebar = ({ setMobileOpen }) => {
           dispatch(selectGenreOrCategory('popular'));
           setSelectedCategoriesIndex(null);
           setSelectedIndex(null);
+          setMobileOpen(false);
         }}
       >
         <Box
@@ -93,6 +93,7 @@ const Sidebar = ({ setMobileOpen }) => {
             setSelectedIndex(0);
             setSelectedCategoriesIndex(null);
             setSelectedGenreIndex(null);
+            setMobileOpen(false);
           }}
           selected={selectedIndex === 0}
         >
@@ -109,7 +110,7 @@ const Sidebar = ({ setMobileOpen }) => {
 
       {isMovies ? (
         <List>
-          <ListSubheader>Categories</ListSubheader>
+          <StyledListSubheader>Categories</StyledListSubheader>
           {movieCategories.map(({ label, value }, i) => (
             <StyledLinks to={`/`} key={value}>
               <ListItemButton
@@ -119,6 +120,7 @@ const Sidebar = ({ setMobileOpen }) => {
                   setSelectedCategoriesIndex(i);
                   setSelectedGenreIndex(null);
                   setSelectedIndex(null);
+                  setMobileOpen(false);
                 }}
               >
                 <ListItemIcon>
@@ -135,7 +137,7 @@ const Sidebar = ({ setMobileOpen }) => {
         </List>
       ) : (
         <List>
-          <ListSubheader>Categories</ListSubheader>
+          <StyledListSubheader>Categories</StyledListSubheader>
           {tvShowsCategories.map(({ label, value }, i) => (
             <StyledLinks to={'/tv'} key={value}>
               <ListItemButton
@@ -145,6 +147,7 @@ const Sidebar = ({ setMobileOpen }) => {
                   setSelectedCategoriesIndex(i);
                   setSelectedGenreIndex(null);
                   setSelectedIndex(null);
+                  setMobileOpen(false);
                 }}
               >
                 <ListItemIcon>
@@ -166,7 +169,7 @@ const Sidebar = ({ setMobileOpen }) => {
       {/* Movies/TV shows Genres */}
       {isMovies ? (
         <List>
-          <ListSubheader>Genres</ListSubheader>
+          <StyledListSubheader>Genres</StyledListSubheader>
           {isLoading ? (
             <SidebarLoaderContainer>
               <CircularProgress size='2rem' />
@@ -181,6 +184,7 @@ const Sidebar = ({ setMobileOpen }) => {
                     setSelectedGenreIndex(i);
                     setSelectedCategoriesIndex(null);
                     setSelectedIndex(null);
+                    setMobileOpen(false);
                   }}
                 >
                   <ListItemIcon>
@@ -198,7 +202,7 @@ const Sidebar = ({ setMobileOpen }) => {
         </List>
       ) : (
         <List>
-          <ListSubheader>Genres</ListSubheader>
+          <StyledListSubheader>Genres</StyledListSubheader>
           {tvGenresLoading ? (
             <SidebarLoaderContainer>
               <CircularProgress size='2rem' />
@@ -213,6 +217,7 @@ const Sidebar = ({ setMobileOpen }) => {
                     setSelectedGenreIndex(i);
                     setSelectedCategoriesIndex(null);
                     setSelectedIndex(null);
+                    setMobileOpen(false);
                   }}
                 >
                   <ListItemIcon>

@@ -15,10 +15,13 @@ export const toolbar = {
   padding: ' 2em',
 };
 
-export const LoaderContainer = styled(Box)({
+export const LoaderContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   display: 'flex',
   justifyContent: 'center',
   height: '100vh',
   width: '80vw',
-});
+  [theme.breakpoints.down('sm')]: {
+    width: '100vw',
+  },
+}));

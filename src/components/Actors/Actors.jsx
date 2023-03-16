@@ -50,7 +50,11 @@ const Actors = () => {
       <StyledGrid container>
         <Grid item sm={12} lg={4} align='center'>
           <StyledPosterImage
-            src={`https://image.tmdb.org/t/p/w780/${cast?.profile_path}`}
+            src={
+              cast?.profile_path
+                ? `https://image.tmdb.org/t/p/w500${cast?.profile_path}`
+                : 'https:/shrtco.de/YWpmUW'
+            }
             alt={cast?.name}
           />
         </Grid>

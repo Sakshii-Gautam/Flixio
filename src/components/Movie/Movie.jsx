@@ -4,15 +4,20 @@ import { useSelector } from 'react-redux';
 import { image, StyledLink, StyledTypography } from './styles';
 
 const Movie = ({ movie, i }) => {
-  const { browseMedia } = useSelector((state) => state.optionPreferences);
-  const isPeople = browseMedia === 'person';
-  const infoLink = movie?.name ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+  const { media } = useSelector((state) => state.optionPreferences);
+  const isPeople = media === 'person';
+  const infoLink =
+    movie?.media_type === 'person'
+      ? `/person/${movie.id}`
+      : media === 'tv'
+      ? `/tv/${movie.id}`
+      : `/movie/${movie.id}`;
   const defaultImage = 'https:/shrtco.de/YWpmUW';
 
-  const sourceImage = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    : movie.profile_path
-    ? `https://image.tmdb.org/t/p/w500${movie.profile_path}`
+  const sourceImage = movie?.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
+    : movie?.profile_path
+    ? `https://image.tmdb.org/t/p/w500${movie?.profile_path}`
     : defaultImage;
 
   return (

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, ListSubheader } from '@mui/material';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
 
@@ -28,3 +28,8 @@ export const SidebarLoaderContainer = styled(Box)({
   alignItems: 'center',
   height: '50vh',
 });
+export const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    backgroundColor: theme.palette.mode === 'dark' && '#353535',
+  },
+}));

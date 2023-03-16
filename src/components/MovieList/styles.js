@@ -4,5 +4,5 @@ export const movieContainer = {
   justifyContent: { xs: 'center', sm: 'center' },
   overflow: 'auto',
   textAlign: 'center',
-  padding: '0.5rem',
+  padding: '0.6rem',
 };

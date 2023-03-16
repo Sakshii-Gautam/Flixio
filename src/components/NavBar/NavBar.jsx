@@ -37,7 +37,7 @@ const NavBar = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isMobile = useMediaQuery('(max-width:600px)');
-  const isSmallestDevice = useMediaQuery('(max-width:370px)');
+  const isSmallDevice = useMediaQuery('(max-width:450px)');
   const { user, isAuthenticated, sessionId } = useSelector(
     (state) => state.user
   );
@@ -51,7 +51,7 @@ const NavBar = () => {
     if (token) {
       dispatch(loginUser({ token, sessionIdLocalStorage }));
     }
-  }, [dispatch]);
+  }, [dispatch, token, sessionIdLocalStorage]);
 
   return (
     <>
@@ -103,9 +103,9 @@ const NavBar = () => {
               <Button
                 variant='secondary'
                 sx={{ color: '#fff' }}
-                onClick={() => dispatch(toggleMedia('tvshows'))}
+                onClick={() => dispatch(toggleMedia('tv'))}
               >
-                {isSmallestDevice ? 'TV' : 'TV Shows'}
+                {isSmallDevice ? 'TV' : 'TV Shows'}
               </Button>
             </Link>
           </Box>
@@ -128,7 +128,7 @@ const NavBar = () => {
               >
                 <Avatar
                   sx={{ w: '30px', h: '30px', backgroundColor: 'secondary' }}
-                  // src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
+                  src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
                   alt='profile'
                 >
                   S

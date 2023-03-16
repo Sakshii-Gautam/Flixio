@@ -94,3 +94,18 @@ export const StyledIframe = styled('iframe')(({ theme }) => ({
     height: '90%',
   },
 }));
+
+export const closeModalIcon = {
+  cursor: 'pointer',
+  position: 'absolute',
+  top: '-75%',
+  right: '-75%',
+  left: '0',
+  bottom: '0',
+};
+export const modalDialogContent = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+};

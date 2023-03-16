@@ -1,5 +1,6 @@
 import { Box, Typography, Card, CardContent, CardMedia } from '@mui/material';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   featuredCardContainer,
@@ -11,8 +12,15 @@ import {
 } from './styles';
 
 const FeaturedMovie = ({ movie }) => {
+  const { media } = useSelector((state) => state.optionPreferences);
+  const isMovies = media === 'movie';
+
   return (
-    <Box component={Link} to={`/movie/${movie?.id}`} sx={featuredCardContainer}>
+    <Box
+      component={Link}
+      to={isMovies ? `/movie/${movie?.id}` : `/tv/${movie?.id}`}
+      sx={featuredCardContainer}
+    >
       <Card sx={card}>
         <CardMedia
           media='picture'
