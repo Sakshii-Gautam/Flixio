@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux';
 import { image, StyledLink, StyledTypography } from '../Movie/styles';
 
 const BrowseResult = ({ movie, i }) => {
-  const { media, browseMedia } = useSelector(
-    (state) => state.optionPreferences
-  );
-  const isPeople = browseMedia === 'person';
+  const { browseMedia } = useSelector((state) => state.optionPreferences);
+  const isPeople = movie?.media_type === 'person';
   const infoLink =
     movie?.media_type === 'person'
       ? `/person/${movie.id}`

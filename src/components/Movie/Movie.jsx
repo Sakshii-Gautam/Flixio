@@ -9,7 +9,7 @@ const Movie = ({ movie, i }) => {
   const infoLink =
     movie?.media_type === 'person'
       ? `/person/${movie.id}`
-      : media === 'tv'
+      : media === 'tv' || movie?.media_type === 'tv'
       ? `/tv/${movie.id}`
       : `/movie/${movie.id}`;
 

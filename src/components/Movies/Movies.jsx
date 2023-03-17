@@ -13,8 +13,10 @@ const Movies = () => {
   );
   const dispatch = useDispatch();
 
-  const largeDevice = useMediaQuery((theme) => theme.breakpoints.only('lg'));
-  const numberOfMovies = largeDevice ? 19 : 17;
+  const largeDevice = useMediaQuery((theme) =>
+    theme.breakpoints.between('md', 'lg')
+  );
+  const numberOfMovies = largeDevice ? 17 : 19;
 
   useEffect(() => {
     const data = {

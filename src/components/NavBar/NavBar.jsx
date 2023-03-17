@@ -22,8 +22,11 @@ import {
   MobileDrawer,
   DesktopDrawer,
   LinkButton,
+  StyledNavMenuLink,
+  activeMedia,
+  navMenuItemsContainer,
 } from './styles';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Sidebar, Search } from '../../components';
 import { fetchToken } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,11 +50,14 @@ const NavBar = () => {
   const token = localStorage.getItem('request_token');
   const sessionIdLocalStorage = localStorage.getItem('session_id');
 
+  const mediaTypePreference =
+    sessionStorage.getItem('mediaTypePreference') === 'tv' ? 'tv' : media;
+
   useEffect(() => {
     if (token) {
       dispatch(loginUser({ token, sessionIdLocalStorage }));
     }
-  }, [dispatch, token, sessionIdLocalStorage]);
+  }, [dispatch, token, sessionIdLocalStorage, media]);
 
   return (
     <>
@@ -81,33 +87,26 @@ const NavBar = () => {
             {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
 
-          <Box
-            sx={{
-              display: 'flex',
-              gap: { xs: '0', sm: '2rem' },
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Link component='Button' to={`/`}>
-              <Button
-                variant='secondary'
-                sx={{ color: '#fff' }}
-                onClick={() => dispatch(toggleMedia('movie'))}
-              >
-                Movies
-              </Button>
-            </Link>
+          <Box sx={navMenuItemsContainer}>
+            <StyledNavMenuLink
+              media={media}
+              component='Button'
+              to={`/`}
+              onClick={() => dispatch(toggleMedia('movie'))}
+              sx={mediaTypePreference === 'movie' && activeMedia}
+            >
+              Movies
+            </StyledNavMenuLink>
 
-            <Link component='Button' to={`/tv`}>
-              <Button
-                variant='secondary'
-                sx={{ color: '#fff' }}
-                onClick={() => dispatch(toggleMedia('tv'))}
-              >
-                {isSmallDevice ? 'TV' : 'TV Shows'}
-              </Button>
-            </Link>
+            <StyledNavMenuLink
+              media={media}
+              component='Button'
+              to={`/tv`}
+              onClick={() => dispatch(toggleMedia('tv'))}
+              sx={mediaTypePreference === 'tv' && activeMedia}
+            >
+              {isSmallDevice ? 'TV' : 'TV Shows'}
+            </StyledNavMenuLink>
           </Box>
 
           {/* {!isMobile && <Search />} */}

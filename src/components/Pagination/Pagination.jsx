@@ -1,6 +1,8 @@
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, IconButton } from '@mui/material';
 import React from 'react';
 import { paginationContainer } from './styles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 const Pagination = ({ currentPage, setPage, totalPages }) => {
   const handlePrev = () => {
@@ -19,29 +21,27 @@ const Pagination = ({ currentPage, setPage, totalPages }) => {
 
   return (
     <Box sx={paginationContainer}>
-      <Button
+      <IconButton
         onClick={handlePrev}
         sx={{ m: '30px 2px' }}
         variant='contained'
-        color='primary'
         type='button'
       >
-        Prev
-      </Button>
+        <NavigateBeforeIcon fontSize='large' />
+      </IconButton>
 
       <Typography variant='h4' sx={{ m: '0 20px', color: 'text.primary' }}>
         {currentPage}
       </Typography>
 
-      <Button
+      <IconButton
         onClick={handleNext}
         sx={{ m: '30px 2px' }}
         variant='contained'
-        color='primary'
         type='button'
       >
-        Next
-      </Button>
+        <NavigateNextIcon fontSize='large' />
+      </IconButton>
     </Box>
   );
 };

@@ -39,14 +39,13 @@ import {
   StyledButtonsContainer,
   StyledModal,
   StyledIframe,
-  closeModalIcon,
   modalDialogContent,
+  StyledCloseModalIcon,
 } from './styles';
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
 import { MovieList } from '..';
 import { LoaderContainer } from '../../styles';
-import CloseIcon from '@mui/icons-material/Close';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -71,7 +70,13 @@ const MovieInformation = () => {
   const [isMovieFavorited, setIsMovieFavorited] = useState(false);
   const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
 
+  const filterByPosterAndProfile = recommendations?.results?.filter(
+    (recommendation) =>
+      recommendation?.poster_path || recommendation?.profile_path
+  );
+
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     dispatch(getMovieById(id));
     dispatch(getRecommendations({ list: 'recommendations', movie_id: id }));
     const data = {
@@ -180,7 +185,8 @@ const MovieInformation = () => {
           gutterBottom
           sx={{ fontWeight: '500', textAlign: 'center' }}
         >
-          {movie?.title}({movie?.release_date?.split('-')[0]})
+          {movie?.title}
+          {/* {movie?.release_date && (movie?.release_date?.split('-')[0])} */}
         </Typography>
 
         {/* Movie Tagline */}
@@ -200,7 +206,7 @@ const MovieInformation = () => {
 
           <Typography variant='h6' align='center' gutterBottom>
             {movie?.runtime} min | Language:
-            {movie?.spoken_languages?.[0].name}
+            {movie?.spoken_languages?.[0]?.name || ''}
           </Typography>
         </StyledGrid>
 
@@ -353,7 +359,7 @@ const MovieInformation = () => {
           gutterBottom
           sx={{ fontWeight: '500', textAlign: 'center' }}
         >
-          You might also like
+          {filterByPosterAndProfile?.length > 0 && 'You might also like'}{' '}
         </Typography>
 
         {recommendations ? (
@@ -380,11 +386,8 @@ const MovieInformation = () => {
                 allow='autoplay'
               />
 
-              <IconButton
-                sx={closeModalIcon}
-                onClick={() => setShowTrailerModal(false)}
-              >
-                <CloseIcon fontSize='large' />
+              <IconButton onClick={() => setShowTrailerModal(false)}>
+                <StyledCloseModalIcon fontSize='large' />
               </IconButton>
             </>
           )}

@@ -8,6 +8,7 @@ import {
   InputAdornment,
   CircularProgress,
   useMediaQuery,
+  Typography,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -35,9 +36,12 @@ const Browse = () => {
   const [languageFilter, setLanguageFilter] = useState(language || '');
   const [query, setQuery] = useState(searchQuery || '');
   const [mediaFilter, setMediaFilter] = useState(browseMedia || '');
-  const largeDevice = useMediaQuery((theme) => theme.breakpoints.only('lg'));
   const smallDevice = useMediaQuery((theme) => theme.breakpoints.down('sm_md'));
-  const numberOfMovies = largeDevice ? 19 : 17;
+  const largeDevice = useMediaQuery((theme) =>
+    theme.breakpoints.between('md', 'lg')
+  );
+  const numberOfMovies = largeDevice ? 17 : 19;
+
   const isSearching = query.length > 0;
 
   useEffect(() => {
@@ -52,7 +56,9 @@ const Browse = () => {
         setLanguageFilter('');
         dispatch(searchMovie(query));
       }
+      if (allContent?.results?.length === 0 && query) setMediaFilter('');
     }, 1000);
+
     return () => {
       clearTimeout(searchingMovie);
     };
@@ -170,6 +176,11 @@ const Browse = () => {
                 movies={allContent}
                 numberOfMovies={numberOfMovies}
               />
+            )}
+            {allContent?.results?.length === 0 && query && (
+              <Typography variant='h5'>
+                Sorry no results found for "{query}"
+              </Typography>
             )}
           </>
         )}

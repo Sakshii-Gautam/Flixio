@@ -33,8 +33,8 @@ import {
   StyledButtonsContainer,
   StyledModal,
   StyledIframe,
-  closeModalIcon,
   modalDialogContent,
+  StyledCloseModalIcon,
 } from '../MovieInformation/styles.js';
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
@@ -73,7 +73,13 @@ const TvInformation = () => {
   const [isTvShowFavorited, setIsTvShowFavorited] = useState(false);
   const [isTvShowWatchlisted, setIsTvShowWatchlisted] = useState(false);
 
+  const filterByPosterAndProfile = recommendations?.results?.filter(
+    (recommendation) =>
+      recommendation?.poster_path || recommendation?.profile_path
+  );
+
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     dispatch(getTvShowById(id));
     dispatch(getTvShowsRecommendations({ tv_id: id }));
     const data = {
@@ -362,7 +368,7 @@ const TvInformation = () => {
           gutterBottom
           sx={{ fontWeight: '500', textAlign: 'center' }}
         >
-          You might also like
+          {filterByPosterAndProfile?.length > 0 && 'You might also like'}
         </Typography>
 
         {recommendations ? (
@@ -393,7 +399,7 @@ const TvInformation = () => {
                 sx={closeModalIcon}
                 onClick={() => setShowTrailerModal(false)}
               >
-                <CloseIcon fontSize='large' />
+                <StyledCloseModalIcon fontSize='large' />
               </IconButton>
             </>
           )}

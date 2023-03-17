@@ -1,6 +1,7 @@
 import { Grid, Modal } from '@mui/material';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const StyledGrid = styled(Grid)(({ theme }) => ({
   display: 'flex',
@@ -84,28 +85,37 @@ export const StyledModal = styled(Modal)({
   display: 'flex',
   justifyContent: 'space-around',
   flexWrap: 'wrap',
+  height: '100vh',
+  justifyContent: 'center',
+  alignItems: 'center',
 });
 
 export const StyledIframe = styled('iframe')(({ theme }) => ({
   width: '50%',
-  height: '50%',
-  [theme.breakpoints.down('sm')]: {
-    width: '90%',
-    height: '90%',
+  height: '50vh',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    height: '40vh',
   },
 }));
 
-export const closeModalIcon = {
+export const StyledCloseModalIcon = styled(CloseIcon)(({ theme }) => ({
   cursor: 'pointer',
   position: 'absolute',
-  top: '-75%',
-  right: '-75%',
-  left: '0',
+  top: '-1650%',
+  right: '0',
+  left: '75%',
   bottom: '0',
-};
+  [theme.breakpoints.down('md')]: {
+    top: '-1415%',
+    left: '-30%',
+  },
+}));
+
 export const modalDialogContent = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   position: 'relative',
+  height: '100vh',
 };

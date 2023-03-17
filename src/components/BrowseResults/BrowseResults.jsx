@@ -1,12 +1,15 @@
 import { Grid } from '@mui/material';
 import React from 'react';
 import { BrowseResult } from '..';
-import { movieContainer } from '../MovieList/styles';
+import { contentContainer } from './styles';
 
-const BrowseResults = ({ movies, numberOfMovies, excludeFirst }) => {
+const BrowseResults = ({ movies, numberOfMovies }) => {
+  const contentFilterByImages = movies?.results?.filter(
+    (movie) => movie?.poster_path || movie?.profile_path
+  );
   return (
-    <Grid container sx={movieContainer}>
-      {movies?.results?.map((movie, i) => (
+    <Grid container sx={contentContainer}>
+      {contentFilterByImages?.slice(0, numberOfMovies).map((movie, i) => (
         <BrowseResult key={movie.id} movie={movie} i={i} />
       ))}
     </Grid>

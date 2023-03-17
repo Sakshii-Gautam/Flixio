@@ -1,5 +1,6 @@
 import { styled } from '@mui/system';
 import { Button, Toolbar } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   height: '70px',
@@ -50,4 +51,24 @@ export const LinkButton = {
   },
 };
 
-export { MenuButton, StyledToolbar, StyledNav };
+export const navMenuItemsContainer = {
+  display: 'flex',
+  gap: '2rem',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const StyledNavMenuLink = styled(Link)({
+  color: '#d7d3d3',
+  '&:hover': {
+    color: 'white',
+    transform: 'scale(1.03)',
+  },
+});
+
+export const activeMedia = {
+  color: 'white',
+  fontWeight: '600',
+};
+
+export { MenuButton, StyledToolbar, StyledNav, StyledNavMenuLink };

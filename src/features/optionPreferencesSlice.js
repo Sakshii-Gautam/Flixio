@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const media = sessionStorage.getItem('mediaTypePreference');
+
 const optionPreferencesSlice = createSlice({
   name: 'optionPreferences',
   initialState: {
@@ -7,7 +9,7 @@ const optionPreferencesSlice = createSlice({
     page: 1,
     searchQuery: '',
     language: '',
-    media: 'movie',
+    media,
     browseMedia: '',
   },
   reducers: {
@@ -17,6 +19,7 @@ const optionPreferencesSlice = createSlice({
       state.searchQuery = '';
       state.language = '';
       state.browseMedia = '';
+      sessionStorage.setItem('mediaTypePreference', action.payload);
     },
     selectGenreOrCategory: (state, action) => {
       state.genreIdOrCategoryName = action.payload;

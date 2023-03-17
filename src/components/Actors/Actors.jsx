@@ -1,11 +1,18 @@
 import { ArrowBack } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCastDetails, getMovieByCastId } from '../../services/tmdb';
 import { MovieList, Pagination } from '..';
-import { actorImage, actorDetailsContainer, buttonsContainer } from './styles';
+import { buttonsContainer } from './styles';
 import { LoaderContainer } from '../../styles';
 import { StyledGrid, StyledPosterImage } from '../MovieInformation/styles';
 
@@ -18,9 +25,22 @@ const Actors = () => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     dispatch(getCastDetails({ cast_id: id }));
+  }, [id]);
+
+  useEffect(() => {
     dispatch(getMovieByCastId({ cast_id: id, page: page }));
-  }, [dispatch, id, page]);
+  }, [page]);
+
+  const largeDevice = useMediaQuery((theme) =>
+    theme.breakpoints.between('md', 'lg')
+  );
+  const numberOfMovies = largeDevice ? 16 : 18;
+
+  const filterByPosterAndProfile = castMovies?.results?.filter(
+    (castMovie) => castMovie?.poster_path || castMovie?.profile_path
+  );
 
   if (isLoading) {
     return (
@@ -60,7 +80,6 @@ const Actors = () => {
         </Grid>
 
         {/* Cast's Biography */}
-        {/* <Grid item lg={7} xl={8} sx={actorDetailsContainer}> */}
         <Grid
           item
           container
@@ -107,12 +126,12 @@ const Actors = () => {
           gutterBottom
           sx={{ fontWeight: '500', textAlign: 'center' }}
         >
-          Movies
+          {filterByPosterAndProfile?.length > 0 && 'Movies'}
         </Typography>
 
         {castMovies ? (
           <>
-            <MovieList movies={castMovies} numberOfMovies={12} />
+            <MovieList movies={castMovies} numberOfMovies={numberOfMovies} />
             <Pagination
               currentPage={page}
               setPage={setPage}
@@ -120,7 +139,9 @@ const Actors = () => {
             />
           </>
         ) : (
-          <Box>Sorry, {cast?.name} is not casted in other Movies yet...</Box>
+          <Typography>
+            Sorry, {cast?.name} is not casted in other Movies yet...
+          </Typography>
         )}
       </Box>
     </>
