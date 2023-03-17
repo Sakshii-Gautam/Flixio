@@ -1,17 +1,21 @@
 import { Box, Grid, Grow, Rating, Tooltip } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { image, StyledLink, StyledTypography } from './styles';
+import { image, StyledLink, StyledTypography } from '../Movie/styles';
 
-const Movie = ({ movie, i }) => {
-  const { media } = useSelector((state) => state.optionPreferences);
-  const isPeople = media === 'person';
+const BrowseResult = ({ movie, i }) => {
+  const { media, browseMedia } = useSelector(
+    (state) => state.optionPreferences
+  );
+  const isPeople = browseMedia === 'person';
   const infoLink =
     movie?.media_type === 'person'
       ? `/person/${movie.id}`
-      : media === 'tv'
+      : movie?.media_type === 'tv'
       ? `/tv/${movie.id}`
       : `/movie/${movie.id}`;
+
+  const browsePageFilterLinks = `/${browseMedia}/${movie?.id}`;
 
   const defaultImage = 'https:/shrtco.de/YWpmUW';
 
@@ -32,7 +36,7 @@ const Movie = ({ movie, i }) => {
       sx={{ p: '10px', pb: { md: '1.5rem' } }}
     >
       <Grow in key={i} timeout={(i + 1) * 100} appear>
-        <StyledLink to={infoLink}>
+        <StyledLink to={browseMedia ? browsePageFilterLinks : infoLink}>
           <Box component='img' sx={image} alt={movie.title} src={sourceImage} />
           <StyledTypography variant='h6'>
             {movie?.media_type === 'tv'
@@ -58,4 +62,4 @@ const Movie = ({ movie, i }) => {
   );
 };
 
-export default Movie;
+export default BrowseResult;

@@ -18,7 +18,7 @@ import {
   setBrowseMedia,
 } from '../../features/optionPreferencesSlice';
 import { LoaderContainer } from '../../styles';
-import { MovieList } from '..';
+import { BrowseResults } from '..';
 import { getSearchList, getAllTrending } from '../../services';
 import { allLanguages, allMedia } from '../../constants';
 import styles from './styles';
@@ -27,14 +27,14 @@ const Browse = () => {
   const { allContent, isLoading: isAllContentLoading } = useSelector(
     (state) => state.browse.allContent
   );
-  const { searchQuery, language, browseMedia } = useSelector(
+  const { searchQuery, language, browseMedia, media } = useSelector(
     (state) => state.optionPreferences
   );
 
   const dispatch = useDispatch();
-  const [languageFilter, setLanguageFilter] = useState('');
-  const [query, setQuery] = useState('');
-  const [mediaFilter, setMediaFilter] = useState('');
+  const [languageFilter, setLanguageFilter] = useState(language || '');
+  const [query, setQuery] = useState(searchQuery || '');
+  const [mediaFilter, setMediaFilter] = useState(browseMedia || '');
   const largeDevice = useMediaQuery((theme) => theme.breakpoints.only('lg'));
   const smallDevice = useMediaQuery((theme) => theme.breakpoints.down('sm_md'));
   const numberOfMovies = largeDevice ? 19 : 17;
@@ -44,10 +44,7 @@ const Browse = () => {
     if (!searchQuery && !browseMedia && !language) {
       dispatch(getAllTrending());
     }
-    setQuery('');
-    setLanguageFilter('');
-    setMediaFilter('');
-  }, []);
+  }, [searchQuery, browseMedia, language]);
 
   useEffect(() => {
     const searchingMovie = setTimeout(() => {
@@ -62,9 +59,12 @@ const Browse = () => {
   }, [query]);
 
   useEffect(() => {
-    if (mediaFilter) dispatch(setBrowseMedia(mediaFilter));
-    if (languageFilter) dispatch(searchLanguage(languageFilter));
-  }, [mediaFilter, languageFilter]);
+    dispatch(searchLanguage(languageFilter));
+  }, [languageFilter]);
+
+  useEffect(() => {
+    dispatch(setBrowseMedia(mediaFilter));
+  }, [mediaFilter]);
 
   useEffect(() => {
     dispatch(getSearchList({ browseMedia, language, searchQuery }));
@@ -166,7 +166,10 @@ const Browse = () => {
                 </LoaderContainer>
               </>
             ) : (
-              <MovieList movies={allContent} numberOfMovies={numberOfMovies} />
+              <BrowseResults
+                movies={allContent}
+                numberOfMovies={numberOfMovies}
+              />
             )}
           </>
         )}

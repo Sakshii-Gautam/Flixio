@@ -14,3 +14,5 @@ export { default as FeaturedMovie } from './FeaturedMovie/FeaturedMovie';
 export { default as Browse } from './Browse/Browse';
 export { default as TvShows } from './TvShows/TvShows';
 export { default as TvInformation } from './TvInformation/TvInformation';
+export { default as BrowseResults } from './BrowseResults/BrowseResults';
+export { default as BrowseResult } from './BrowseResult/BrowseResult';
