@@ -53,7 +53,7 @@ export const getTvShowsGenres = createAsyncThunk(
 
 export const getTvShowById = createAsyncThunk(
   'tv/getTvShowById',
-  async (tv_id) => {
+  async ({ tv_id }) => {
     try {
       const response =
         await axios.get(`${baseUrl}/tv/${tv_id}?api_key=${tmdbApiKey}&append_to_response=videos,credits

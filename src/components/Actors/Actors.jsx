@@ -13,12 +13,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getCastDetails, getMovieByCastId } from '../../services/tmdb';
 import { MovieList, Pagination } from '..';
 import { buttonsContainer } from './styles';
-import { LoaderContainer } from '../../styles';
+import { GoBackButton, LoaderContainer } from '../../styles';
 import { StyledGrid, StyledPosterImage } from '../MovieInformation/styles';
+import { getCombinedCreditsByCastId } from '../../services';
 
 const Actors = () => {
   const { cast, isLoading, isError } = useSelector((state) => state.cast);
-  const { popular: castMovies } = useSelector((state) => state.popular);
+  const { peopleDetails } = useSelector((state) => state.people.peopleDetails);
+  const castCredits = peopleDetails?.combined_credits?.cast;
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -30,16 +32,16 @@ const Actors = () => {
   }, [id]);
 
   useEffect(() => {
-    dispatch(getMovieByCastId({ cast_id: id, page: page }));
-  }, [page]);
+    dispatch(getCombinedCreditsByCastId({ cast_id: id, page }));
+  }, [id, dispatch, page]);
 
   const largeDevice = useMediaQuery((theme) =>
     theme.breakpoints.between('md', 'lg')
   );
   const numberOfMovies = largeDevice ? 16 : 18;
 
-  const filterByPosterAndProfile = castMovies?.results?.filter(
-    (castMovie) => castMovie?.poster_path || castMovie?.profile_path
+  const filterByPosterAndProfile = castCredits?.filter(
+    (castMovie) => castMovie?.poster_path
   );
 
   if (isLoading) {
@@ -68,6 +70,9 @@ const Actors = () => {
     <>
       {/* Cast's Image */}
       <StyledGrid container>
+        <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
+          Go Back
+        </GoBackButton>
         <Grid item sm={12} lg={4} align='center'>
           <StyledPosterImage
             src={
@@ -107,14 +112,6 @@ const Actors = () => {
             >
               IMDB
             </Button>
-
-            <Button
-              startIcon={<ArrowBack />}
-              onClick={() => navigate(-1)}
-              color='primary'
-            >
-              Go Back
-            </Button>
           </Box>
         </Grid>
       </StyledGrid>
@@ -126,21 +123,21 @@ const Actors = () => {
           gutterBottom
           sx={{ fontWeight: '500', textAlign: 'center' }}
         >
-          {filterByPosterAndProfile?.length > 0 && 'Movies'}
+          {filterByPosterAndProfile?.length > 0 && 'Movies & Shows'}
         </Typography>
 
-        {castMovies ? (
+        {filterByPosterAndProfile ? (
           <>
-            <MovieList movies={castMovies} numberOfMovies={numberOfMovies} />
-            <Pagination
-              currentPage={page}
-              setPage={setPage}
-              totalPages={castMovies?.total_pages}
+            <MovieList
+              castCredits={filterByPosterAndProfile}
+              numberOfMovies={numberOfMovies}
             />
+            {/*TODO:
+            <Pagination currentPage={page} setPage={setPage} totalPages={15} /> */}
           </>
         ) : (
-          <Typography>
-            Sorry, {cast?.name} is not casted in other Movies yet...
+          <Typography align='center'>
+            Sorry, {cast?.name} is not casted in other Movies/Shows yet...
           </Typography>
         )}
       </Box>

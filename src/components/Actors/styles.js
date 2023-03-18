@@ -14,6 +14,6 @@ export const actorDetailsContainer = {
 
 export const buttonsContainer = {
   display: 'flex',
-  justifyContent: 'space-around',
+  justifyContent: 'center',
   marginTop: '2rem',
 };

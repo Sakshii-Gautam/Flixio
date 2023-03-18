@@ -19,7 +19,7 @@ import {
   PlusOne,
   Theaters,
 } from '@mui/icons-material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
@@ -39,7 +39,7 @@ import {
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
 import { MovieList } from '..';
-import { LoaderContainer } from '../../styles';
+import { GoBackButton, LoaderContainer } from '../../styles';
 import {
   getTvShowById,
   getTvShowFavoritesList,
@@ -68,6 +68,7 @@ const TvInformation = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [showTrailerModal, setShowTrailerModal] = useState(false);
   const [isTvShowFavorited, setIsTvShowFavorited] = useState(false);
@@ -80,7 +81,7 @@ const TvInformation = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    dispatch(getTvShowById(id));
+    dispatch(getTvShowById({ tv_id: id }));
     dispatch(getTvShowsRecommendations({ tv_id: id }));
     const data = {
       accountId: user.id,
@@ -158,6 +159,9 @@ const TvInformation = () => {
   return (
     <StyledGrid container>
       <ToastContainer />
+      <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
+        Go Back
+      </GoBackButton>
       {/* Movie Poster */}
       <Grid
         item
@@ -211,7 +215,7 @@ const TvInformation = () => {
               ? `${tvshow?.number_of_seasons} seasons`
               : `${tvshow?.number_of_episodes} episodes`}{' '}
             | Language:
-            {tvshow?.spoken_languages?.[0].name}
+            {tvshow?.spoken_languages?.[0]?.name}
           </Typography>
         </StyledGrid>
 
@@ -395,10 +399,7 @@ const TvInformation = () => {
                 allow='autoplay'
               />
 
-              <IconButton
-                sx={closeModalIcon}
-                onClick={() => setShowTrailerModal(false)}
-              >
+              <IconButton onClick={() => setShowTrailerModal(false)}>
                 <StyledCloseModalIcon fontSize='large' />
               </IconButton>
             </>

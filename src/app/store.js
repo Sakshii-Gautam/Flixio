@@ -12,20 +12,22 @@ import {
 } from '../features/movieSlice';
 import { browseSlice } from '../features/browseSlice';
 import { tvShowSlice, tvShowsSlice } from '../features/tvSlice';
+import { peopleSlice } from '../features/peopleSlice';
 
 const store = configureStore({
   reducer: {
     browse: browseSlice.reducer,
-    popular: moviePopularSlice.reducer,
-    genres: movieGenreSlice.reducer,
-    optionPreferences: optionPreferencesSlice.reducer,
-    user: authSlice.reducer,
-    movie: movieSlice.reducer,
-    tvshow: tvShowSlice.reducer,
-    recommendations: movieRecommendationSlice.reducer,
-    tvshows: tvShowsSlice.reducer,
     cast: movieCastSlice.reducer,
     favorites: movieFavoriteSlice.reducer,
+    genres: movieGenreSlice.reducer,
+    movie: movieSlice.reducer,
+    optionPreferences: optionPreferencesSlice.reducer,
+    people: peopleSlice.reducer,
+    popular: moviePopularSlice.reducer,
+    recommendations: movieRecommendationSlice.reducer,
+    tvshow: tvShowSlice.reducer,
+    tvshows: tvShowsSlice.reducer,
+    user: authSlice.reducer,
     watchlist: movieWatchlistSlice.reducer,
   },
 });

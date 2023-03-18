@@ -97,3 +97,17 @@ export const getFilteredMovies = createAsyncThunk(
     }
   }
 );
+
+export const getCombinedCreditsByCastId = createAsyncThunk(
+  'cast/getCombinedCredits',
+  async ({ cast_id, page }) => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/person/${cast_id}?api_key=${tmdbApiKey}&append_to_response=combined_credits`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+);

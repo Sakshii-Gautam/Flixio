@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { styled } from '@mui/system';
 
 export const root = {
@@ -24,4 +24,11 @@ export const LoaderContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width: '100vw',
   },
+}));
+
+export const GoBackButton = styled(Button)(({ theme }) => ({
+  alignSelf: 'flex-start',
+  marginLeft: '15px',
+  marginBottom: '15px',
+  color: 'primary',
 }));

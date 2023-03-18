@@ -20,7 +20,7 @@ import {
   PlusOne,
   Theaters,
 } from '@mui/icons-material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import {
@@ -45,7 +45,7 @@ import {
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
 import { MovieList } from '..';
-import { LoaderContainer } from '../../styles';
+import { GoBackButton, LoaderContainer } from '../../styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -65,6 +65,7 @@ const MovieInformation = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [showTrailerModal, setShowTrailerModal] = useState(false);
   const [isMovieFavorited, setIsMovieFavorited] = useState(false);
@@ -155,6 +156,9 @@ const MovieInformation = () => {
   return (
     <StyledGrid container>
       <ToastContainer />
+      <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
+        Go Back
+      </GoBackButton>
       {/* Movie Poster */}
       <Grid
         item
