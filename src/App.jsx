@@ -24,12 +24,9 @@ const App = () => {
         <Box sx={content} />
 
         <Routes>
-          <Route path='/' element={<Movies />}>
-            <Route path='approved' element={<Movies />} />
-          </Route>
-          {/* <Route path='/' exact element={<Movies />} />
+          <Route path='/' exact element={<Movies />} />
 
-          <Route path='/approved' element={<Movies />} /> */}
+          <Route path='/approved' element={<Movies />} />
 
           <Route path='/movie/:id' element={<MovieInformation />} />
 

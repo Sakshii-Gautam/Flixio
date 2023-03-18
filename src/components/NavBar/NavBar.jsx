@@ -41,9 +41,7 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery('(max-width:600px)');
   const isSmallDevice = useMediaQuery('(max-width:450px)');
-  const { user, isAuthenticated, sessionId } = useSelector(
-    (state) => state.user
-  );
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { media } = useSelector((state) => state.optionPreferences);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -128,10 +126,8 @@ const NavBar = () => {
                 <Avatar
                   sx={{ w: '30px', h: '30px', backgroundColor: 'secondary' }}
                   src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
-                  alt='profile'
-                >
-                  S
-                </Avatar>
+                  alt={`${user?.username}` || 'S'}
+                />
               </Button>
             )}
           </div>

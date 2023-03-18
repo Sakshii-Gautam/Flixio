@@ -7,7 +7,6 @@ import {
   useTheme,
   ListItemButton,
   CircularProgress,
-  useMediaQuery,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import {
@@ -22,10 +21,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getMoviesGenres } from '../../services/tmdb';
 import { useDispatch, useSelector } from 'react-redux';
 import genreIcons from '../../assets/genres';
-import {
-  selectGenreOrCategory,
-  toggleMedia,
-} from '../../features/optionPreferencesSlice';
+import { selectGenreOrCategory } from '../../features/optionPreferencesSlice';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import { getTvShowsGenres } from '../../services/tv';
 
