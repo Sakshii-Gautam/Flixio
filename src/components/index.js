@@ -16,3 +16,4 @@ export { default as TvShows } from './TvShows/TvShows';
 export { default as TvInformation } from './TvInformation/TvInformation';
 export { default as BrowseResults } from './BrowseResults/BrowseResults';
 export { default as BrowseResult } from './BrowseResult/BrowseResult';
+export { default as Media } from './Media/Media';

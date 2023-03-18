@@ -375,7 +375,7 @@ const TvInformation = () => {
           </Typography>
 
           {recommendations ? (
-            <MovieList movies={recommendations} numberOfMovies={12} />
+            <MovieList recommendations={recommendations} numberOfMovies={18} />
           ) : (
             <Box>Sorry, No Similar Movies Found!</Box>
           )}
