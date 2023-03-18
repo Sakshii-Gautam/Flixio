@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 export const StyledGrid = styled(Grid)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-around',
-  margin: '30px 0 10px 0 !important',
+  margin: '0 0 10px 0 !important',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
     width: '100%',

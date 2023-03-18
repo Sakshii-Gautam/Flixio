@@ -68,11 +68,11 @@ const Actors = () => {
 
   return (
     <>
+      <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
+        Go Back
+      </GoBackButton>
       {/* Cast's Image */}
       <StyledGrid container>
-        <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
-          Go Back
-        </GoBackButton>
         <Grid item sm={12} lg={4} align='center'>
           <StyledPosterImage
             src={

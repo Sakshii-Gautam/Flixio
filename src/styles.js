@@ -27,8 +27,7 @@ export const LoaderContainer = styled(Box)(({ theme }) => ({
 }));
 
 export const GoBackButton = styled(Button)(({ theme }) => ({
-  alignSelf: 'flex-start',
   marginLeft: '15px',
-  marginBottom: '15px',
-  color: 'primary',
+  marginTop: '15px',
+  color: theme.palette.primary,
 }));

@@ -46,14 +46,12 @@ import {
   getTvShowsRecommendations,
   getTvShowWatchlist,
 } from '../../services/tv';
-import CloseIcon from '@mui/icons-material/Close';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
-const sessionId = localStorage.getItem('session_id');
-
 const TvInformation = () => {
+  const tmdbApiKey = import.meta.env.VITE_TMDB_API_KEY;
+  const sessionId = localStorage.getItem('session_id');
   const {
     tvshow,
     isLoading: isTvShowLoading,
@@ -157,156 +155,157 @@ const TvInformation = () => {
   }
 
   return (
-    <StyledGrid container>
-      <ToastContainer />
+    <>
       <GoBackButton startIcon={<ArrowBack />} onClick={() => navigate(-1)}>
         Go Back
       </GoBackButton>
-      {/* Movie Poster */}
-      <Grid
-        item
-        sm={12}
-        lg={4}
-        sx={{ textAlign: { xs: 'center', md: 'center', lg: 'none' } }}
-      >
-        <StyledPosterImage
-          src={
-            tvshow?.poster_path
-              ? `https://image.tmdb.org/t/p/w500${tvshow?.poster_path}`
-              : 'https:/shrtco.de/YWpmUW'
-          }
-          alt={tvshow?.name}
-        />
-      </Grid>
-
-      {/* Movie Title And ReleaseDate */}
-      <Grid
-        item
-        container
-        direction='column'
-        lg={7}
-        sx={{ width: '90%', mt: '30px' }}
-      >
-        <Typography
-          variant='h3'
-          gutterBottom
-          sx={{ fontWeight: '500', textAlign: 'center' }}
+      <StyledGrid container>
+        <ToastContainer />
+        {/* Movie Poster */}
+        <Grid
+          item
+          sm={12}
+          lg={4}
+          sx={{ textAlign: { xs: 'center', md: 'center', lg: 'none' } }}
         >
-          {tvshow?.name}
-        </Typography>
+          <StyledPosterImage
+            src={
+              tvshow?.poster_path
+                ? `https://image.tmdb.org/t/p/w500${tvshow?.poster_path}`
+                : 'https:/shrtco.de/YWpmUW'
+            }
+            alt={tvshow?.name}
+          />
+        </Grid>
 
-        {/* Movie Tagline */}
-        <Typography variant='h5' align='center' gutterBottom>
-          {tvshow?.tagline}
-        </Typography>
-
-        {/* Movie Rating And Languages */}
-        <StyledGrid item>
-          <Box display='flex' align='center'>
-            <Rating readOnly value={tvshow?.vote_average / 2} />
-
-            <Typography variant='subtitle1' gutterBottom sx={{ ml: '10px' }}>
-              {tvshow?.vote_average} /10
-            </Typography>
-          </Box>
-
-          <Typography variant='h6' align='center' gutterBottom>
-            {tvshow?.number_of_seasons > 1
-              ? `${tvshow?.number_of_seasons} seasons`
-              : `${tvshow?.number_of_episodes} episodes`}{' '}
-            | Language:
-            {tvshow?.spoken_languages?.[0]?.name}
+        {/* Movie Title And ReleaseDate */}
+        <Grid
+          item
+          container
+          direction='column'
+          lg={7}
+          sx={{ width: '90%', mt: '30px' }}
+        >
+          <Typography
+            variant='h3'
+            gutterBottom
+            sx={{ fontWeight: '500', textAlign: 'center' }}
+          >
+            {tvshow?.name}
           </Typography>
-        </StyledGrid>
 
-        {/* Movie Genre */}
-        <Grid item sx={genresContainer}>
-          {tvshow?.genres?.map((genre) => (
-            <StyledLinks
-              sx={{ textDecoration: 'none' }}
-              to='/'
-              key={genre.id}
-              onClick={() => {
-                dispatch(selectGenreOrCategory(genre.id));
-              }}
-            >
-              <StyledGenreImage src={genreIcons[genre?.name.toLowerCase()]} />
+          {/* Movie Tagline */}
+          <Typography variant='h5' align='center' gutterBottom>
+            {tvshow?.tagline}
+          </Typography>
 
-              <Typography variant='subtitle1' color='textPrimary'>
-                {genre?.name}
+          {/* Movie Rating And Languages */}
+          <StyledGrid item>
+            <Box display='flex' align='center'>
+              <Rating readOnly value={tvshow?.vote_average / 2} />
+
+              <Typography variant='subtitle1' gutterBottom sx={{ ml: '10px' }}>
+                {tvshow?.vote_average} /10
               </Typography>
-            </StyledLinks>
-          ))}
-        </Grid>
+            </Box>
 
-        {/* Movie Overview */}
-        <Typography variant='h5' gutterBottom sx={{ mt: '10px' }}>
-          Overview
-        </Typography>
-        <Typography sx={{ mb: '2rem' }}>{tvshow?.overview}</Typography>
+            <Typography variant='h6' align='center' gutterBottom>
+              {tvshow?.number_of_seasons > 1
+                ? `${tvshow?.number_of_seasons} seasons`
+                : `${tvshow?.number_of_episodes} episodes`}{' '}
+              | Language:
+              {tvshow?.spoken_languages?.[0]?.name}
+            </Typography>
+          </StyledGrid>
 
-        {/* Movie Cast */}
-        <Typography variant='h5' gutterBottom>
-          Top Cast
-        </Typography>
-        <Grid item container spacing={2}>
-          {tvshow &&
-            tvshow.credits?.cast
-              ?.map(
-                (character, i) =>
-                  character.profile_path && (
-                    <Grid
-                      key={i}
-                      item
-                      xs={4}
-                      md={2}
-                      component={Link}
-                      to={`/person/${character.id}`}
-                      sx={{ textDecoration: 'none' }}
-                    >
-                      <StyledCastImage
-                        src={
-                          character?.profile_path
-                            ? `https://image.tmdb.org/t/p/w500${character?.profile_path}`
-                            : 'https:/shrtco.de/YWpmUW'
-                        }
-                        alt={character.name}
-                      />
-                      <Typography color='textPrimary'>
-                        {character.name}
-                      </Typography>
-                      <Typography color='textSecondary'>
-                        {character.character.split('/')[0]}
-                      </Typography>
-                    </Grid>
-                  )
-              )
-              .slice(0, 6)}
-        </Grid>
-
-        {/* Movie Call to Action */}
-        <Grid item container sx={{ mt: '2rem' }}>
-          <StyledButtonsContainer>
-            <StyledButtonsContainer item xs={12} sm={6}>
-              <ButtonGroup
-                size='medium'
-                variant='outlined'
-                sx={{
-                  justifyContent: {
-                    md: 'center',
-                    lg: 'initial',
-                  },
+          {/* Movie Genre */}
+          <Grid item sx={genresContainer}>
+            {tvshow?.genres?.map((genre) => (
+              <StyledLinks
+                sx={{ textDecoration: 'none' }}
+                to='/'
+                key={genre.id}
+                onClick={() => {
+                  dispatch(selectGenreOrCategory(genre.id));
                 }}
               >
-                <Button
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  href={tvshow?.homepage}
-                  endIcon={<Language />}
+                <StyledGenreImage src={genreIcons[genre?.name.toLowerCase()]} />
+
+                <Typography variant='subtitle1' color='textPrimary'>
+                  {genre?.name}
+                </Typography>
+              </StyledLinks>
+            ))}
+          </Grid>
+
+          {/* Movie Overview */}
+          <Typography variant='h5' gutterBottom sx={{ mt: '10px' }}>
+            Overview
+          </Typography>
+          <Typography sx={{ mb: '2rem' }}>{tvshow?.overview}</Typography>
+
+          {/* Movie Cast */}
+          <Typography variant='h5' gutterBottom>
+            Top Cast
+          </Typography>
+          <Grid item container spacing={2}>
+            {tvshow &&
+              tvshow.credits?.cast
+                ?.map(
+                  (character, i) =>
+                    character.profile_path && (
+                      <Grid
+                        key={i}
+                        item
+                        xs={4}
+                        md={2}
+                        component={Link}
+                        to={`/person/${character.id}`}
+                        sx={{ textDecoration: 'none' }}
+                      >
+                        <StyledCastImage
+                          src={
+                            character?.profile_path
+                              ? `https://image.tmdb.org/t/p/w500${character?.profile_path}`
+                              : 'https:/shrtco.de/YWpmUW'
+                          }
+                          alt={character.name}
+                        />
+                        <Typography color='textPrimary'>
+                          {character.name}
+                        </Typography>
+                        <Typography color='textSecondary'>
+                          {character.character.split('/')[0]}
+                        </Typography>
+                      </Grid>
+                    )
+                )
+                .slice(0, 6)}
+          </Grid>
+
+          {/* Movie Call to Action */}
+          <Grid item container sx={{ mt: '2rem' }}>
+            <StyledButtonsContainer>
+              <StyledButtonsContainer item xs={12} sm={6}>
+                <ButtonGroup
+                  size='medium'
+                  variant='outlined'
+                  sx={{
+                    justifyContent: {
+                      md: 'center',
+                      lg: 'initial',
+                    },
+                  }}
                 >
-                  Website
-                </Button>
-                {/* <Button
+                  <Button
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href={tvshow?.homepage}
+                    endIcon={<Language />}
+                  >
+                    Website
+                  </Button>
+                  {/* <Button
                   target='_blank'
                   rel='noopener noreferrer'
                   href={`https://www.imdb.com/title/${tvshow?.imdb_id}`}
@@ -314,99 +313,100 @@ const TvInformation = () => {
                 >
                   IMDB
                 </Button> */}
-                <Button
-                  href='#'
-                  onClick={() => setShowTrailerModal(!showTrailerModal)}
-                  endIcon={<Theaters />}
-                >
-                  Trailer
-                </Button>
-              </ButtonGroup>
-            </StyledButtonsContainer>
-
-            <StyledButtonsContainer item xs={12} sm={6}>
-              <ButtonGroup size='medium' variant='outlined'>
-                <Button
-                  onClick={addToFavorites}
-                  endIcon={
-                    isTvShowFavorited ? (
-                      <FavoriteBorderOutlined />
-                    ) : (
-                      <Favorite />
-                    )
-                  }
-                >
-                  {isTvShowFavorited ? 'Unfavorite' : 'Favorite'}
-                </Button>
-                <Button
-                  onClick={addToWatchlist}
-                  endIcon={isTvShowWatchlisted ? <Remove /> : <PlusOne />}
-                >
-                  Watchlist
-                </Button>
-                <Button
-                  sx={{ borderColor: 'primary.main' }}
-                  onClick={() => {}}
-                  endIcon={<ArrowBack />}
-                >
-                  <Typography
-                    sx={{ textDecoration: 'none' }}
-                    color='inherit'
-                    component={Link}
-                    to='/'
-                    variant='subtitle2'
+                  <Button
+                    href='#'
+                    onClick={() => setShowTrailerModal(!showTrailerModal)}
+                    endIcon={<Theaters />}
                   >
-                    Back
-                  </Typography>
-                </Button>
-              </ButtonGroup>
+                    Trailer
+                  </Button>
+                </ButtonGroup>
+              </StyledButtonsContainer>
+
+              <StyledButtonsContainer item xs={12} sm={6}>
+                <ButtonGroup size='medium' variant='outlined'>
+                  <Button
+                    onClick={addToFavorites}
+                    endIcon={
+                      isTvShowFavorited ? (
+                        <FavoriteBorderOutlined />
+                      ) : (
+                        <Favorite />
+                      )
+                    }
+                  >
+                    {isTvShowFavorited ? 'Unfavorite' : 'Favorite'}
+                  </Button>
+                  <Button
+                    onClick={addToWatchlist}
+                    endIcon={isTvShowWatchlisted ? <Remove /> : <PlusOne />}
+                  >
+                    Watchlist
+                  </Button>
+                  <Button
+                    sx={{ borderColor: 'primary.main' }}
+                    onClick={() => {}}
+                    endIcon={<ArrowBack />}
+                  >
+                    <Typography
+                      sx={{ textDecoration: 'none' }}
+                      color='inherit'
+                      component={Link}
+                      to='/'
+                      variant='subtitle2'
+                    >
+                      Back
+                    </Typography>
+                  </Button>
+                </ButtonGroup>
+              </StyledButtonsContainer>
             </StyledButtonsContainer>
-          </StyledButtonsContainer>
+          </Grid>
         </Grid>
-      </Grid>
 
-      {/* Movie Similar - You Might Also Like */}
-      <Box sx={{ mt: '2rem', width: '100%' }}>
-        <Typography
-          variant='h4'
-          gutterBottom
-          sx={{ fontWeight: '500', textAlign: 'center' }}
-        >
-          {filterByPosterAndProfile?.length > 0 && 'You might also like'}
-        </Typography>
+        {/* Movie Similar - You Might Also Like */}
+        <Box sx={{ mt: '2rem', width: '100%' }}>
+          <Typography
+            variant='h4'
+            gutterBottom
+            sx={{ fontWeight: '500', textAlign: 'center' }}
+          >
+            {filterByPosterAndProfile?.length > 0 && 'You might also like'}
+          </Typography>
 
-        {recommendations ? (
-          <MovieList movies={recommendations} numberOfMovies={12} />
-        ) : (
-          <Box>Sorry, No Similar Movies Found!</Box>
-        )}
-      </Box>
-
-      {/* Movie Trailer */}
-      <StyledModal
-        closeAfterTransition
-        open={showTrailerModal}
-        onClose={() => setShowTrailerModal(!showTrailerModal)}
-      >
-        <DialogContent sx={modalDialogContent}>
-          {tvshow?.videos?.results?.length > 0 && (
-            <>
-              <StyledIframe
-                className='videos'
-                autoPlay
-                title='Trailer'
-                src={`https://www.youtube.com/embed/${tvshow?.videos?.results[0]?.key}`}
-                allow='autoplay'
-              />
-
-              <IconButton onClick={() => setShowTrailerModal(false)}>
-                <StyledCloseModalIcon fontSize='large' />
-              </IconButton>
-            </>
+          {recommendations ? (
+            <MovieList movies={recommendations} numberOfMovies={12} />
+          ) : (
+            <Box>Sorry, No Similar Movies Found!</Box>
           )}
-        </DialogContent>
-      </StyledModal>
-    </StyledGrid>
+        </Box>
+
+        {/* Movie Trailer */}
+        <StyledModal
+          closeAfterTransition
+          open={showTrailerModal}
+          onClose={() => setShowTrailerModal(!showTrailerModal)}
+        >
+          <DialogContent sx={modalDialogContent}>
+            {tvshow?.videos?.results?.length > 0 && (
+              <>
+                <StyledIframe
+                  className='videos'
+                  autoPlay
+                  title='Trailer'
+                  src={`https://www.youtube.com/embed/${tvshow?.videos?.results[0]?.key}`}
+                  allow='autoplay'
+                />
+
+                <IconButton onClick={() => setShowTrailerModal(false)}>
+                  <StyledCloseModalIcon fontSize='large' />
+                </IconButton>
+              </>
+            )}
+          </DialogContent>
+        </StyledModal>
+      </StyledGrid>
+    </>
   );
 };
 
