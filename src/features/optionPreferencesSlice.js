@@ -9,7 +9,7 @@ const optionPreferencesSlice = createSlice({
     page: 1,
     searchQuery: '',
     language: '',
-    media,
+    media: 'movie',
     browseMedia: '',
   },
   reducers: {
